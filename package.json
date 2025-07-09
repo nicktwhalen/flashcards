@@ -1,0 +1,37 @@
+{
+  "name": "bird-flashcards",
+  "version": "1.0.0",
+  "description": "Bird identification flashcard app",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "shared"
+  ],
+  "scripts": {
+    "dev:backend": "yarn workspace backend start:dev",
+    "dev:frontend": "yarn workspace frontend dev",
+    "dev": "concurrently \"yarn dev:backend\" \"yarn dev:frontend\"",
+    "build": "yarn workspaces run build",
+    "build:backend": "yarn workspace backend build",
+    "build:frontend": "yarn workspace frontend build",
+    "test": "yarn test:backend && yarn test:frontend",
+    "test:backend": "yarn workspace backend test",
+    "test:frontend": "yarn workspace frontend test --watchAll=false",
+    "test:coverage": "yarn workspace backend test --coverage && yarn workspace frontend test --coverage --watchAll=false",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "prepare": "husky",
+    "check-format": "prettier --check **/*.ts",
+    "format": "prettier --write **/*.ts"
+  },
+  "lint-staged": {
+    "**/*.ts": "prettier --write --ignore-unknown"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "3.6.2"
+  }
+}

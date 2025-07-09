@@ -1,0 +1,16 @@
+.claude
+
+backend/.env
+
+node_modules
+
+backend/dist
+backend/node_modules
+backend/uploads
+
+frontend/.next
+frontend/.swc
+frontend/node_modules
+
+shared/dist
+shared/node_modules
