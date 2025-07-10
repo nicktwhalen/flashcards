@@ -90,6 +90,21 @@ yarn test:frontend
 
 ## Development Commands
 
+### Upload a Local Deck
+
+#### 1. Get Auth Token
+
+1. Log in to the frontend application at http://localhost:3000
+2. Open browser developer tools → Application/Storage → Local Storage
+3. Look for the token key and copy its value
+
+#### 2. Run Upload Script
+
+```bash
+# Upload a directory of images as a new deck
+yarn ts-node scripts/upload_deck.ts <directory_path> <auth_token>
+```
+
 ### Database Management
 
 ```bash

@@ -30,9 +30,12 @@
     "**/*.tsx": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
+    "@types/node-fetch": "^2.6.12",
     "concurrently": "^8.0.0",
+    "form-data": "^4.0.3",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
+    "node-fetch": "^2.7.0",
     "prettier": "3.6.2"
   }
 }
