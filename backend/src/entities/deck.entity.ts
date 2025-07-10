@@ -25,9 +25,9 @@ export class Deck {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => Flashcard, flashcard => flashcard.deck)
+  @OneToMany(() => Flashcard, (flashcard) => flashcard.deck)
   flashcards: Flashcard[];
 
-  @OneToMany(() => ReviewSession, session => session.deck)
+  @OneToMany(() => ReviewSession, (session) => session.deck)
   reviewSessions: ReviewSession[];
 }

@@ -53,22 +53,13 @@ export class DecksController {
   }
 
   @Put(':deckId/flashcards/:flashcardId')
-  updateFlashcard(
-    @Param('deckId') deckId: string,
-    @Param('flashcardId') flashcardId: string,
-    @Body() updateFlashcardDto: UpdateFlashcardDto,
-    @Req() req: Request
-  ) {
+  updateFlashcard(@Param('deckId') deckId: string, @Param('flashcardId') flashcardId: string, @Body() updateFlashcardDto: UpdateFlashcardDto, @Req() req: Request) {
     const user = req.user as User;
     return this.decksService.updateFlashcard(deckId, flashcardId, updateFlashcardDto, user.id);
   }
 
   @Delete(':deckId/flashcards/:flashcardId')
-  removeFlashcard(
-    @Param('deckId') deckId: string,
-    @Param('flashcardId') flashcardId: string,
-    @Req() req: Request
-  ) {
+  removeFlashcard(@Param('deckId') deckId: string, @Param('flashcardId') flashcardId: string, @Req() req: Request) {
     const user = req.user as User;
     return this.decksService.removeFlashcard(deckId, flashcardId, user.id);
   }

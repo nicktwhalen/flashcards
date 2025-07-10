@@ -8,7 +8,7 @@ import { DifficultyRating } from '../src/entities';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  
+
   const mockDeck = {
     id: '550e8400-e29b-41d4-a716-446655440000',
     name: 'Test Deck',
@@ -77,18 +77,20 @@ describe('AppController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-    .overrideProvider(DecksService)
-    .useValue(mockDecksService)
-    .overrideProvider(ReviewSessionsService)
-    .useValue(mockReviewSessionsService)
-    .compile();
+      .overrideProvider(DecksService)
+      .useValue(mockDecksService)
+      .overrideProvider(ReviewSessionsService)
+      .useValue(mockReviewSessionsService)
+      .compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe({
-      whitelist: true,
-      transform: true,
-    }));
-    
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+      }),
+    );
+
     await app.init();
   });
 
@@ -99,28 +101,19 @@ describe('AppController (e2e)', () => {
   describe('Decks API', () => {
     describe('/decks (GET)', () => {
       it('should return all decks', () => {
-        return request(app.getHttpServer())
-          .get('/decks')
-          .expect(200)
-          .expect([mockDeck]);
+        return request(app.getHttpServer()).get('/decks').expect(200).expect([mockDeck]);
       });
     });
 
     describe('/decks/:id (GET)', () => {
       it('should return a specific deck', () => {
-        return request(app.getHttpServer())
-          .get('/decks/550e8400-e29b-41d4-a716-446655440000')
-          .expect(200)
-          .expect(mockDeck);
+        return request(app.getHttpServer()).get('/decks/550e8400-e29b-41d4-a716-446655440000').expect(200).expect(mockDeck);
       });
     });
 
     describe('/decks/:id/flashcards (GET)', () => {
       it('should return flashcards for a deck', () => {
-        return request(app.getHttpServer())
-          .get('/decks/550e8400-e29b-41d4-a716-446655440000/flashcards')
-          .expect(200)
-          .expect([mockFlashcard]);
+        return request(app.getHttpServer()).get('/decks/550e8400-e29b-41d4-a716-446655440000/flashcards').expect(200).expect([mockFlashcard]);
       });
     });
   });
@@ -128,34 +121,21 @@ describe('AppController (e2e)', () => {
   describe('Review Sessions API', () => {
     describe('/review-sessions (POST)', () => {
       it('should create a new review session', async () => {
-        return request(app.getHttpServer())
-          .post('/review-sessions')
-          .send({ deckId: '550e8400-e29b-41d4-a716-446655440000' })
-          .expect(201)
-          .expect(mockReviewSession);
+        return request(app.getHttpServer()).post('/review-sessions').send({ deckId: '550e8400-e29b-41d4-a716-446655440000' }).expect(201).expect(mockReviewSession);
       });
 
       it('should validate deckId format', () => {
-        return request(app.getHttpServer())
-          .post('/review-sessions')
-          .send({ deckId: 'invalid-uuid' })
-          .expect(400);
+        return request(app.getHttpServer()).post('/review-sessions').send({ deckId: 'invalid-uuid' }).expect(400);
       });
 
       it('should require deckId', () => {
-        return request(app.getHttpServer())
-          .post('/review-sessions')
-          .send({})
-          .expect(400);
+        return request(app.getHttpServer()).post('/review-sessions').send({}).expect(400);
       });
     });
 
     describe('/review-sessions/:id (GET)', () => {
       it('should return a review session', () => {
-        return request(app.getHttpServer())
-          .get('/review-sessions/550e8400-e29b-41d4-a716-446655440002')
-          .expect(200)
-          .expect(mockReviewSession);
+        return request(app.getHttpServer()).get('/review-sessions/550e8400-e29b-41d4-a716-446655440002').expect(200).expect(mockReviewSession);
       });
     });
 
@@ -219,9 +199,7 @@ describe('AppController (e2e)', () => {
 
   describe('Error Handling', () => {
     it('should handle 404 for non-existent routes', () => {
-      return request(app.getHttpServer())
-        .get('/non-existent-route')
-        .expect(404);
+      return request(app.getHttpServer()).get('/non-existent-route').expect(404);
     });
   });
 });

@@ -12,7 +12,7 @@ export default function AuthCallbackPage(): JSX.Element {
 
   useEffect(() => {
     const token = searchParams.get('token');
-    
+
     if (token) {
       try {
         // Decode the JWT to get user info (basic decoding, not verification)
@@ -23,9 +23,9 @@ export default function AuthCallbackPage(): JSX.Element {
           name: payload.name,
           picture: payload.picture,
         };
-        
+
         login(token, user);
-        
+
         // Use window.location.href instead of router.push to avoid RSC loops
         setTimeout(() => {
           window.location.href = '/';
@@ -47,10 +47,7 @@ export default function AuthCallbackPage(): JSX.Element {
             <div className="text-center">
               <div className="text-red-500 text-xl mb-4">⚠️ Authentication Error</div>
               <p className="text-gray-600 mb-4">{error}</p>
-              <button 
-                onClick={() => router.push('/login')}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
+              <button onClick={() => router.push('/login')} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
                 Try Again
               </button>
             </div>

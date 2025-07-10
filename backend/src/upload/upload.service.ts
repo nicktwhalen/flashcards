@@ -22,13 +22,7 @@ interface FileUpload {
 @Injectable()
 export class UploadService {
   private readonly uploadsDir = path.resolve(__dirname, '../../uploads/flashcards');
-  private readonly allowedMimeTypes = [
-    'image/jpeg',
-    'image/jpg', 
-    'image/png',
-    'image/gif',
-    'image/webp'
-  ];
+  private readonly allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
   private readonly maxFileSize = 5 * 1024 * 1024; // 5MB
   private readonly uploadedFiles = new Map<string, FileUpload>(); // In production, use database
 
@@ -64,7 +58,7 @@ export class UploadService {
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
       'image/gif': ['.gif'],
-      'image/webp': ['.webp']
+      'image/webp': ['.webp'],
     };
 
     if (!validExtensions[file.mimetype]?.includes(ext)) {
@@ -74,7 +68,7 @@ export class UploadService {
     // Generate secure filename using UUID
     const fileId = crypto.randomUUID();
     const secureFilename = `${fileId}${ext}`;
-    
+
     return secureFilename;
   }
 
@@ -98,7 +92,7 @@ export class UploadService {
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
       'image/gif': ['.gif'],
-      'image/webp': ['.webp']
+      'image/webp': ['.webp'],
     };
 
     if (!validExtensions[file.mimetype]?.includes(ext)) {
@@ -107,7 +101,7 @@ export class UploadService {
 
     // Generate secure filename using provided fileId
     const secureFilename = `${fileId}${ext}`;
-    
+
     return secureFilename;
   }
 
@@ -116,7 +110,7 @@ export class UploadService {
    */
   private async validateDeckOwnership(userId: string, deckId: string): Promise<void> {
     const deck = await this.deckRepository.findOne({
-      where: { id: deckId, userId }
+      where: { id: deckId, userId },
     });
 
     if (!deck) {
@@ -131,12 +125,12 @@ export class UploadService {
     // Remove any directory traversal attempts
     const sanitized = path.basename(filename);
     const fullPath = path.resolve(this.uploadsDir, sanitized);
-    
+
     // Ensure the resolved path is within the uploads directory
     if (!fullPath.startsWith(this.uploadsDir)) {
       throw new BadRequestException('Invalid file path');
     }
-    
+
     return fullPath;
   }
 
@@ -153,7 +147,7 @@ export class UploadService {
     // Validate file and get secure filename using the fileId
     const ext = path.extname(file.originalname).toLowerCase();
     const secureFilename = await this.validateFileWithId(file, fileId);
-    
+
     // Get safe file path
     const filePath = this.validateFilePath(secureFilename);
 
@@ -169,7 +163,7 @@ export class UploadService {
       originalName: file.originalname,
       mimeType: file.mimetype,
       size: file.size,
-      uploadDate: new Date()
+      uploadDate: new Date(),
     };
 
     this.uploadedFiles.set(fileId, fileRecord);
@@ -177,7 +171,7 @@ export class UploadService {
     // Return file ID and URL
     return {
       fileId,
-      url: `/uploads/flashcards/${fileId}`
+      url: `/uploads/flashcards/${fileId}`,
     };
   }
 
@@ -186,7 +180,7 @@ export class UploadService {
    */
   async getFile(fileId: string, userId: string): Promise<{ filePath: string; mimeType: string }> {
     const fileRecord = this.uploadedFiles.get(fileId);
-    
+
     if (!fileRecord) {
       throw new BadRequestException('File not found');
     }
@@ -204,7 +198,7 @@ export class UploadService {
 
     return {
       filePath,
-      mimeType: fileRecord.mimeType
+      mimeType: fileRecord.mimeType,
     };
   }
 
@@ -214,7 +208,7 @@ export class UploadService {
    */
   async getFilePublic(fileId: string): Promise<{ filePath: string; mimeType: string }> {
     const fileRecord = this.uploadedFiles.get(fileId);
-    
+
     if (!fileRecord) {
       // Fallback: try to find file on disk by fileId (for legacy files)
       const possibleExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
@@ -228,11 +222,11 @@ export class UploadService {
             '.jpeg': 'image/jpeg',
             '.png': 'image/png',
             '.gif': 'image/gif',
-            '.webp': 'image/webp'
+            '.webp': 'image/webp',
           };
           return {
             filePath,
-            mimeType: mimeTypeMap[ext] || 'application/octet-stream'
+            mimeType: mimeTypeMap[ext] || 'application/octet-stream',
           };
         }
       }
@@ -249,7 +243,7 @@ export class UploadService {
 
     return {
       filePath,
-      mimeType: fileRecord.mimeType
+      mimeType: fileRecord.mimeType,
     };
   }
 
@@ -258,7 +252,7 @@ export class UploadService {
    */
   async deleteFile(fileId: string, userId: string): Promise<void> {
     const fileRecord = this.uploadedFiles.get(fileId);
-    
+
     if (!fileRecord) {
       throw new BadRequestException('File not found');
     }
@@ -277,5 +271,4 @@ export class UploadService {
     // Remove from records
     this.uploadedFiles.delete(fileId);
   }
-
 }

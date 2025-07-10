@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Deck, Flashcard } from "shared";
-import { api } from "@/lib/api";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import UserHeader from "@/components/UserHeader";
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Deck, Flashcard } from 'shared';
+import { api } from '@/lib/api';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import UserHeader from '@/components/UserHeader';
 
 export default function HomePage() {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function HomePage() {
       try {
         const data = await api.decks.getAll();
         setDecks(data);
-        
+
         // Load flashcards for each deck
         const flashcardsMap: Record<string, Flashcard[]> = {};
         await Promise.all(
@@ -32,11 +32,11 @@ export default function HomePage() {
             } catch (err) {
               flashcardsMap[deck.id] = [];
             }
-          })
+          }),
         );
         setDeckFlashcards(flashcardsMap);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load decks");
+        setError(err instanceof Error ? err.message : 'Failed to load decks');
       } finally {
         setLoading(false);
       }
@@ -73,10 +73,7 @@ export default function HomePage() {
         <div className="text-center">
           <div className="text-red-500 text-xl mb-4">⚠️ Error</div>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
+          <button onClick={() => window.location.reload()} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
             Try Again
           </button>
         </div>
@@ -90,85 +87,52 @@ export default function HomePage() {
         <UserHeader />
         <div className="container mx-auto px-4 py-8">
           <header className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Welcome Back!
-            </h1>
-            <p className="text-lg text-gray-600">
-              Continue your bird identification journey
-            </p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome Back!</h1>
+            <p className="text-lg text-gray-600">Continue your bird identification journey</p>
           </header>
 
           <main>
             {decks.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-gray-400 text-6xl mb-4">📚</div>
-                <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-                  No decks available
-                </h2>
-                <p className="text-gray-500 mb-6">
-                  Create your first flashcard deck to get started with bird
-                  identification practice.
-                </p>
-                <Link
-                  href="/decks/create"
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
+                <h2 className="text-2xl font-semibold text-gray-700 mb-2">No decks available</h2>
+                <p className="text-gray-500 mb-6">Create your first flashcard deck to get started with bird identification practice.</p>
+                <Link href="/decks/create" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                   Create Your First Deck
                 </Link>
               </div>
             ) : (
               <div>
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-semibold text-gray-800">
-                    Your Decks ({decks.length} available)
-                  </h2>
-                  <Link
-                    href="/decks/create"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                  >
+                  <h2 className="text-2xl font-semibold text-gray-800">Your Decks ({decks.length} available)</h2>
+                  <Link href="/decks/create" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                     + Create New Deck
                   </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {decks.map((deck) => (
-                    <div
-                      key={deck.id}
-                      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200"
-                    >
-                      <Link
-                        href={`/decks/${deck.id}`}
-                        className="block group"
-                      >
+                    <div key={deck.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200">
+                      <Link href={`/decks/${deck.id}`} className="block group">
                         <div className="flex items-start justify-between mb-4">
-                          <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600">
-                            {deck.name}
-                          </h3>
+                          <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600">{deck.name}</h3>
                         </div>
 
-                        <p className="text-gray-600 mb-4 line-clamp-3">
-                          {deck.description}
-                        </p>
+                        <p className="text-gray-600 mb-4 line-clamp-3">{deck.description}</p>
 
                         {/* Flashcard Preview Images */}
                         <div className="mb-4">
                           {deckFlashcards[deck.id] && deckFlashcards[deck.id].length > 0 ? (
                             <div className="flex gap-2 mb-2">
                               {deckFlashcards[deck.id].slice(0, 3).map((flashcard) => (
-                                <div
-                                  key={flashcard.id}
-                                  className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0"
-                                >
+                                <div key={flashcard.id} className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
                                   {flashcard.imageUrl ? (
                                     <img
-                                      src={flashcard.imageUrl.startsWith('/uploads/') 
-                                        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${flashcard.imageUrl}`
-                                        : flashcard.imageUrl
-                                      }
+                                      src={flashcard.imageUrl.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${flashcard.imageUrl}` : flashcard.imageUrl}
                                       alt={flashcard.birdName}
                                       className="w-full h-full object-cover rounded-lg"
                                       onError={(e) => {
                                         const target = e.target as HTMLImageElement;
-                                        target.style.display = "none";
+                                        target.style.display = 'none';
                                         target.parentElement!.innerHTML = '<span class="text-gray-400 text-xs">🐦</span>';
                                       }}
                                     />
@@ -191,13 +155,8 @@ export default function HomePage() {
                         </div>
 
                         <div className="flex items-center justify-between mb-4">
-                          <span className="text-sm text-gray-500">
-                            {deckFlashcards[deck.id]?.length || 0} cards
-                          </span>
-                          <span className="text-sm text-gray-500">
-                            Created{" "}
-                            {new Date(deck.createdAt).toLocaleDateString()}
-                          </span>
+                          <span className="text-sm text-gray-500">{deckFlashcards[deck.id]?.length || 0} cards</span>
+                          <span className="text-sm text-gray-500">Created {new Date(deck.createdAt).toLocaleDateString()}</span>
                         </div>
                       </Link>
 

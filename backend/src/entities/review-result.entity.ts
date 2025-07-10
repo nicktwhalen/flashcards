@@ -5,7 +5,7 @@ import { Flashcard } from './flashcard.entity';
 export enum DifficultyRating {
   EASY = 'easy',
   DIFFICULT = 'difficult',
-  INCORRECT = 'incorrect'
+  INCORRECT = 'incorrect',
 }
 
 @Entity('review_results')
@@ -21,18 +21,18 @@ export class ReviewResult {
 
   @Column({
     type: 'enum',
-    enum: DifficultyRating
+    enum: DifficultyRating,
   })
   difficultyRating: DifficultyRating;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => ReviewSession, session => session.reviewResults)
+  @ManyToOne(() => ReviewSession, (session) => session.reviewResults)
   @JoinColumn({ name: 'sessionId' })
   session: ReviewSession;
 
-  @ManyToOne(() => Flashcard, flashcard => flashcard.reviewResults)
+  @ManyToOne(() => Flashcard, (flashcard) => flashcard.reviewResults)
   @JoinColumn({ name: 'flashcardId' })
   flashcard: Flashcard;
 }

@@ -22,7 +22,7 @@ export class ReviewSessionsService {
     // Verify user owns the deck if userId is provided
     if (userId) {
       const deck = await this.decksRepository.findOne({
-        where: { id: createReviewSessionDto.deckId, userId }
+        where: { id: createReviewSessionDto.deckId, userId },
       });
       if (!deck) {
         throw new NotFoundException('Deck not found');
@@ -38,9 +38,9 @@ export class ReviewSessionsService {
   }
 
   findOne(id: string) {
-    return this.reviewSessionsRepository.findOne({ 
+    return this.reviewSessionsRepository.findOne({
       where: { id },
-      relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+      relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
     });
   }
 
@@ -48,13 +48,13 @@ export class ReviewSessionsService {
   async findOneByUser(id: string, userId: string): Promise<ReviewSession> {
     const session = await this.reviewSessionsRepository.findOne({
       where: { id, userId },
-      relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+      relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
     });
-    
+
     if (!session) {
       throw new NotFoundException('Review session not found');
     }
-    
+
     return session;
   }
 
@@ -81,33 +81,27 @@ export class ReviewSessionsService {
     await this.reviewSessionsRepository.update(id, {
       completedAt: new Date(),
     });
-    
+
     return userId ? this.findOneByUser(id, userId) : this.findOne(id);
   }
 
   async getSummary(sessionId: string, userId?: string) {
-    const session = userId 
+    const session = userId
       ? await this.findOneByUser(sessionId, userId)
       : await this.reviewSessionsRepository.findOne({
           where: { id: sessionId },
-          relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+          relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
         });
 
     if (!session) {
       return null;
     }
 
-    const easy = session.reviewResults
-      .filter(r => r.difficultyRating === DifficultyRating.EASY)
-      .map(r => r.flashcard);
-    
-    const difficult = session.reviewResults
-      .filter(r => r.difficultyRating === DifficultyRating.DIFFICULT)
-      .map(r => r.flashcard);
-    
-    const incorrect = session.reviewResults
-      .filter(r => r.difficultyRating === DifficultyRating.INCORRECT)
-      .map(r => r.flashcard);
+    const easy = session.reviewResults.filter((r) => r.difficultyRating === DifficultyRating.EASY).map((r) => r.flashcard);
+
+    const difficult = session.reviewResults.filter((r) => r.difficultyRating === DifficultyRating.DIFFICULT).map((r) => r.flashcard);
+
+    const incorrect = session.reviewResults.filter((r) => r.difficultyRating === DifficultyRating.INCORRECT).map((r) => r.flashcard);
 
     return {
       sessionId: session.id,

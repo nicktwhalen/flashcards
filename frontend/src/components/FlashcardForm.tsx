@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { api } from "@/lib/api";
-import { CreateFlashcardDto, UpdateFlashcardDto, Deck, Flashcard } from "shared";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { api } from '@/lib/api';
+import { CreateFlashcardDto, UpdateFlashcardDto, Deck, Flashcard } from 'shared';
 
 interface FlashcardFormProps {
   mode: 'create' | 'edit';
@@ -17,7 +17,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
   const [deck, setDeck] = useState<Deck | null>(null);
   const [flashcard, setFlashcard] = useState<Flashcard | null>(null);
   const [formData, setFormData] = useState({
-    birdName: "",
+    birdName: '',
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -34,19 +34,16 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
     async function loadData() {
       try {
         if (mode === 'edit' && flashcardId) {
-          const [deckData, flashcardData] = await Promise.all([
-            api.decks.getById(deckId),
-            api.decks.getFlashcards(deckId)
-          ]);
-          
+          const [deckData, flashcardData] = await Promise.all([api.decks.getById(deckId), api.decks.getFlashcards(deckId)]);
+
           setDeck(deckData);
-          
-          const currentFlashcard = flashcardData.find(f => f.id === flashcardId);
+
+          const currentFlashcard = flashcardData.find((f) => f.id === flashcardId);
           if (!currentFlashcard) {
-            setError("Flashcard not found");
+            setError('Flashcard not found');
             return;
           }
-          
+
           setFlashcard(currentFlashcard);
           setFormData({ birdName: currentFlashcard.birdName });
           setCurrentImageUrl(currentFlashcard.imageUrl);
@@ -55,7 +52,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
           setDeck(deckData);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load data");
+        setError(err instanceof Error ? err.message : 'Failed to load data');
       } finally {
         setInitialLoading(false);
       }
@@ -82,30 +79,30 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
         setUploading(true);
         const uploadFormData = new FormData();
         uploadFormData.append('image', selectedFile);
-        
+
         const token = localStorage.getItem('token');
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/uploads/flashcards/${deckId}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: uploadFormData,
         });
-        
+
         if (!response.ok) {
           throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
         }
-        
+
         const uploadResult = await response.json();
         setUploading(false);
-        
+
         // Create flashcard with file ID
         const createData: CreateFlashcardDto = {
           birdName: formData.birdName,
           imageUrl: '', // Empty since we're using file upload
-          fileId: uploadResult.fileId
+          fileId: uploadResult.fileId,
         };
-        
+
         await api.decks.createFlashcard(deckId, createData);
       } else {
         // Edit mode
@@ -156,9 +153,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -173,16 +168,16 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
       setError('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
       return;
     }
-    
+
     // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       setError('File size must be less than 5MB');
       return;
     }
-    
+
     setSelectedFile(file);
     setError(null);
-    
+
     // Create preview URL
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
@@ -223,7 +218,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
-    
+
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       validateAndSetFile(files[0]);
@@ -240,10 +235,8 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
 
   const getCurrentImageSrc = (): string | null => {
     if (!currentImageUrl) return null;
-    
-    return currentImageUrl.startsWith('/uploads/') 
-      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${currentImageUrl}`
-      : currentImageUrl;
+
+    return currentImageUrl.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${currentImageUrl}` : currentImageUrl;
   };
 
   if (initialLoading) {
@@ -263,10 +256,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
         <div className="text-center">
           <div className="text-red-500 text-xl mb-4">⚠️ Error</div>
           <p className="text-gray-600 mb-4">{error}</p>
-          <Link
-            href={mode === 'create' ? "/" : `/decks/${deckId}`}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
+          <Link href={mode === 'create' ? '/' : `/decks/${deckId}`} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
             {mode === 'create' ? 'Back to Decks' : 'Back to Deck'}
           </Link>
         </div>
@@ -278,27 +268,20 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <Link
-            href={`/decks/${deckId}`}
-            className="text-blue-600 hover:text-blue-700 font-medium"
-          >
-            ← Back to {deck?.name || "Deck"}
+          <Link href={`/decks/${deckId}`} className="text-blue-600 hover:text-blue-700 font-medium">
+            ← Back to {deck?.name || 'Deck'}
           </Link>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            {mode === 'create' ? 'Add New Flashcard' : 'Edit Flashcard'}
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">{mode === 'create' ? 'Add New Flashcard' : 'Edit Flashcard'}</h1>
 
           {deck && (
             <div className="mb-6 p-4 bg-blue-50 rounded-lg">
               <p className="text-blue-800">
                 <strong>Deck:</strong> {deck.name}
               </p>
-              {deck.description && (
-                <p className="text-blue-600 text-sm mt-1">{deck.description}</p>
-              )}
+              {deck.description && <p className="text-blue-600 text-sm mt-1">{deck.description}</p>}
             </div>
           )}
 
@@ -313,10 +296,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label
-                htmlFor="birdName"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+              <label htmlFor="birdName" className="block text-sm font-medium text-gray-700 mb-2">
                 Bird Name
               </label>
               <input
@@ -332,10 +312,8 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Bird Image
-              </label>
-              
+              <label className="block text-sm font-medium text-gray-700 mb-2">Bird Image</label>
+
               {/* File Upload Section - Only show when no file is selected and no current image */}
               {!selectedFile && !currentImageUrl && (
                 <div className="mb-4">
@@ -343,9 +321,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                     <label
                       htmlFor="image-upload"
                       className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-200 ${
-                        isDragOver
-                          ? 'border-blue-500 bg-blue-50 text-blue-600'
-                          : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+                        isDragOver ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
                       }`}
                       onDragEnter={handleDragEnter}
                       onDragOver={handleDragOver}
@@ -353,15 +329,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                       onDrop={handleDrop}
                     >
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg
-                          className={`w-8 h-8 mb-4 transition-colors duration-200 ${
-                            isDragOver ? 'text-blue-500' : 'text-gray-500'
-                          }`}
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 20 16"
-                        >
+                        <svg className={`w-8 h-8 mb-4 transition-colors duration-200 ${isDragOver ? 'text-blue-500' : 'text-gray-500'}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                           <path
                             stroke="currentColor"
                             strokeLinecap="round"
@@ -370,27 +338,13 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                             d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                           />
                         </svg>
-                        <p className={`mb-2 text-sm transition-colors duration-200 ${
-                          isDragOver ? 'text-blue-600' : 'text-gray-500'
-                        }`}>
-                          <span className="font-semibold">
-                            {isDragOver ? 'Drop image here' : 'Click to upload'}
-                          </span>
+                        <p className={`mb-2 text-sm transition-colors duration-200 ${isDragOver ? 'text-blue-600' : 'text-gray-500'}`}>
+                          <span className="font-semibold">{isDragOver ? 'Drop image here' : 'Click to upload'}</span>
                           {!isDragOver && ' or drag and drop'}
                         </p>
-                        <p className={`text-xs transition-colors duration-200 ${
-                          isDragOver ? 'text-blue-500' : 'text-gray-500'
-                        }`}>
-                          {isDragOver ? 'Release to upload' : 'PNG, JPG, GIF, WebP (MAX. 5MB)'}
-                        </p>
+                        <p className={`text-xs transition-colors duration-200 ${isDragOver ? 'text-blue-500' : 'text-gray-500'}`}>{isDragOver ? 'Release to upload' : 'PNG, JPG, GIF, WebP (MAX. 5MB)'}</p>
                       </div>
-                      <input
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                      />
+                      <input id="image-upload" type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
                     </label>
                   </div>
                 </div>
@@ -410,9 +364,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                           e.currentTarget.nextElementSibling?.classList.remove('hidden');
                         }}
                       />
-                      <div className="text-gray-400 text-center py-20 hidden">
-                        🐦 Image not available
-                      </div>
+                      <div className="text-gray-400 text-center py-20 hidden">🐦 Image not available</div>
                       <button
                         type="button"
                         onClick={() => {
@@ -424,9 +376,7 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                         ×
                       </button>
                     </div>
-                    <p className="mt-2 text-sm text-gray-600 text-center">
-                      Current image
-                    </p>
+                    <p className="mt-2 text-sm text-gray-600 text-center">Current image</p>
                   </div>
                 </div>
               )}
@@ -436,17 +386,8 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                 <div className="mb-4">
                   <div className="border border-gray-300 rounded-md p-4 bg-gray-50">
                     <div className="relative">
-                      <img
-                        src={imagePreview}
-                        alt="Bird preview"
-                        className="max-w-full h-48 object-cover rounded-md mx-auto"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleRemoveFile}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
-                        title="Remove image"
-                      >
+                      <img src={imagePreview} alt="Bird preview" className="max-w-full h-48 object-cover rounded-md mx-auto" />
+                      <button type="button" onClick={handleRemoveFile} className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors" title="Remove image">
                         ×
                       </button>
                     </div>
@@ -464,13 +405,10 @@ export default function FlashcardForm({ mode, deckId, flashcardId }: FlashcardFo
                 disabled={loading || uploading || !formData.birdName.trim() || (mode === 'create' && !selectedFile) || (mode === 'edit' && !selectedFile && !currentImageUrl)}
                 className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                {uploading ? "Uploading..." : loading ? (mode === 'create' ? "Adding..." : "Updating...") : (mode === 'create' ? "Add Flashcard" : "Update Flashcard")}
+                {uploading ? 'Uploading...' : loading ? (mode === 'create' ? 'Adding...' : 'Updating...') : mode === 'create' ? 'Add Flashcard' : 'Update Flashcard'}
               </button>
 
-              <Link
-                href={`/decks/${deckId}`}
-                className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 text-center"
-              >
+              <Link href={`/decks/${deckId}`} className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 text-center">
                 Cancel
               </Link>
             </div>

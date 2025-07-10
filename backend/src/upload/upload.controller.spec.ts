@@ -66,19 +66,13 @@ describe('UploadController', () => {
       const result = await controller.uploadFlashcardImage('deck-1', mockFile, mockRequest);
 
       expect(result).toEqual(expectedResult);
-      expect(mockUploadService.uploadFile).toHaveBeenCalledWith(
-        mockFile,
-        mockUser.id,
-        'deck-1'
-      );
+      expect(mockUploadService.uploadFile).toHaveBeenCalledWith(mockFile, mockUser.id, 'deck-1');
     });
 
     it('should throw BadRequestException when no file is uploaded', async () => {
       const mockRequest = { user: mockUser } as any;
 
-      await expect(controller.uploadFlashcardImage('deck-1', undefined, mockRequest))
-        .rejects
-        .toThrow(BadRequestException);
+      await expect(controller.uploadFlashcardImage('deck-1', undefined, mockRequest)).rejects.toThrow(BadRequestException);
     });
 
     it('should propagate service errors', async () => {
@@ -86,9 +80,7 @@ describe('UploadController', () => {
 
       const mockRequest = { user: mockUser } as any;
 
-      await expect(controller.uploadFlashcardImage('deck-1', mockFile, mockRequest))
-        .rejects
-        .toThrow('Upload failed');
+      await expect(controller.uploadFlashcardImage('deck-1', mockFile, mockRequest)).rejects.toThrow('Upload failed');
     });
   });
 
@@ -119,9 +111,7 @@ describe('UploadController', () => {
 
       const mockResponse = {} as Response;
 
-      await expect(controller.getFlashcardImage('file-id', mockResponse))
-        .rejects
-        .toThrow('File not found');
+      await expect(controller.getFlashcardImage('file-id', mockResponse)).rejects.toThrow('File not found');
     });
   });
 
@@ -141,9 +131,7 @@ describe('UploadController', () => {
 
       const mockRequest = { user: mockUser } as any;
 
-      await expect(controller.deleteFlashcardImage('file-id', mockRequest))
-        .rejects
-        .toThrow('Delete failed');
+      await expect(controller.deleteFlashcardImage('file-id', mockRequest)).rejects.toThrow('Delete failed');
     });
   });
 });

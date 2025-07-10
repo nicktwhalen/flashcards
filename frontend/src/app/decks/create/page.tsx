@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { api } from "@/lib/api";
-import { CreateDeckDto } from "shared";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import UserHeader from "@/components/UserHeader";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { api } from '@/lib/api';
+import { CreateDeckDto } from 'shared';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import UserHeader from '@/components/UserHeader';
 
 export default function CreateDeckPage(): JSX.Element {
   const router = useRouter();
   const [formData, setFormData] = useState<CreateDeckDto>({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,15 +26,13 @@ export default function CreateDeckPage(): JSX.Element {
       const deck = await api.decks.create(formData);
       router.push(`/decks/${deck.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create deck");
+      setError(err instanceof Error ? err.message : 'Failed to create deck');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -49,18 +47,13 @@ export default function CreateDeckPage(): JSX.Element {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto">
             <div className="mb-6">
-              <Link
-                href="/"
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
+              <Link href="/" className="text-blue-600 hover:text-blue-700 font-medium">
                 ← Back to Decks
               </Link>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                Create New Deck
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">Create New Deck</h1>
 
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
@@ -73,10 +66,7 @@ export default function CreateDeckPage(): JSX.Element {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                     Deck Name
                   </label>
                   <input
@@ -92,14 +82,8 @@ export default function CreateDeckPage(): JSX.Element {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Description{" "}
-                    <span className="text-gray-500 font-normal">
-                      (optional)
-                    </span>
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                    Description <span className="text-gray-500 font-normal">(optional)</span>
                   </label>
                   <textarea
                     id="description"
@@ -118,13 +102,10 @@ export default function CreateDeckPage(): JSX.Element {
                     disabled={loading || !formData.name.trim()}
                     className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                   >
-                    {loading ? "Creating..." : "Create Deck"}
+                    {loading ? 'Creating...' : 'Create Deck'}
                   </button>
 
-                  <Link
-                    href="/"
-                    className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 text-center"
-                  >
+                  <Link href="/" className="flex-1 bg-gray-200 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 text-center">
                     Cancel
                   </Link>
                 </div>

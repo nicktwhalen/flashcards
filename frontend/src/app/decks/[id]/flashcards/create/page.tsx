@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import UserHeader from "@/components/UserHeader";
-import FlashcardForm from "@/components/FlashcardForm";
+import { useState, useEffect } from 'react';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import UserHeader from '@/components/UserHeader';
+import FlashcardForm from '@/components/FlashcardForm';
 
 interface CreateFlashcardPageProps {
   params: Promise<{ id: string }>;
 }
 
 export default function CreateFlashcardPage({ params }: CreateFlashcardPageProps): JSX.Element {
-  const [deckId, setDeckId] = useState<string>("");
+  const [deckId, setDeckId] = useState<string>('');
 
   useEffect(() => {
     async function loadParams() {

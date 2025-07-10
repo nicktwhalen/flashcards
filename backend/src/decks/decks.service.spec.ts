@@ -117,7 +117,7 @@ describe('DecksService', () => {
       expect(result).toEqual(expectedDecks);
       expect(mockDecksRepository.find).toHaveBeenCalledWith({
         where: { userId: 'user-1' },
-        order: { createdAt: 'DESC' }
+        order: { createdAt: 'DESC' },
       });
     });
   });
@@ -148,7 +148,7 @@ describe('DecksService', () => {
       expect(result).toEqual(mockDeck);
       expect(mockDecksRepository.findOne).toHaveBeenCalledWith({
         where: { id: '1', userId: 'user-1' },
-        relations: ['flashcards']
+        relations: ['flashcards'],
       });
     });
 
@@ -193,7 +193,7 @@ describe('DecksService', () => {
       expect(result).toEqual(expectedFlashcards);
       expect(mockFlashcardsRepository.find).toHaveBeenCalledWith({
         where: { deckId: '1' },
-        order: { createdAt: 'ASC' }
+        order: { createdAt: 'ASC' },
       });
     });
 
@@ -206,7 +206,7 @@ describe('DecksService', () => {
       expect(result).toEqual(expectedFlashcards);
       expect(mockFlashcardsRepository.find).toHaveBeenCalledWith({
         where: { deckId: '1' },
-        order: { createdAt: 'ASC' }
+        order: { createdAt: 'ASC' },
       });
     });
   });

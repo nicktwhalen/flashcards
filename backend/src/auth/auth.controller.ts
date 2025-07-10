@@ -20,7 +20,7 @@ export class AuthController {
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response): Promise<void> {
     const user = req.user as User;
     const loginResponse: LoginResponse = await this.authService.login(user);
-    
+
     // Redirect to frontend with token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const redirectUrl = `${frontendUrl}/auth/callback?token=${loginResponse.access_token}`;

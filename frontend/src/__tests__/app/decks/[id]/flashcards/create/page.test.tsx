@@ -52,9 +52,7 @@ const mockUser = {
   picture: 'test-picture.jpg',
 };
 
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-  <AuthProvider>{children}</AuthProvider>
-);
+const TestWrapper = ({ children }: { children: React.ReactNode }) => <AuthProvider>{children}</AuthProvider>;
 
 describe('CreateFlashcardPage', () => {
   beforeEach(() => {
@@ -71,11 +69,11 @@ describe('CreateFlashcardPage', () => {
 
   it('should render upload form correctly', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -87,7 +85,7 @@ describe('CreateFlashcardPage', () => {
 
   it('should handle file upload successfully', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     // Mock successful upload
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
@@ -103,7 +101,7 @@ describe('CreateFlashcardPage', () => {
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -129,9 +127,9 @@ describe('CreateFlashcardPage', () => {
         expect.objectContaining({
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer mock-token',
+            Authorization: 'Bearer mock-token',
           },
-        })
+        }),
       );
     });
 
@@ -150,11 +148,11 @@ describe('CreateFlashcardPage', () => {
 
   it('should validate file type', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -173,11 +171,11 @@ describe('CreateFlashcardPage', () => {
 
   it('should validate file size', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -188,7 +186,7 @@ describe('CreateFlashcardPage', () => {
     const fileInput = document.getElementById('image-upload') as HTMLInputElement;
     const largeFile = new File(['x'.repeat(6 * 1024 * 1024)], 'large.jpg', { type: 'image/jpeg' });
     Object.defineProperty(largeFile, 'size', { value: 6 * 1024 * 1024 });
-    
+
     fireEvent.change(fileInput, { target: { files: [largeFile] } });
 
     await waitFor(() => {
@@ -198,7 +196,7 @@ describe('CreateFlashcardPage', () => {
 
   it('should handle upload errors gracefully', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     // Mock failed upload
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
@@ -209,7 +207,7 @@ describe('CreateFlashcardPage', () => {
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -236,11 +234,11 @@ describe('CreateFlashcardPage', () => {
 
   it('should require file upload to submit form', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -258,11 +256,11 @@ describe('CreateFlashcardPage', () => {
 
   it('should show upload section initially and hide when file is selected', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -298,11 +296,11 @@ describe('CreateFlashcardPage', () => {
 
   it('should provide visual feedback during drag and drop', async () => {
     const mockParams = Promise.resolve({ id: 'deck-1' });
-    
+
     render(
       <TestWrapper>
         <CreateFlashcardPage params={mockParams} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -319,7 +317,7 @@ describe('CreateFlashcardPage', () => {
 
     // Simulate drag enter
     fireEvent.dragEnter(uploadLabel!, {
-      dataTransfer: { files: [new File(['test'], 'test.jpg', { type: 'image/jpeg' })] }
+      dataTransfer: { files: [new File(['test'], 'test.jpg', { type: 'image/jpeg' })] },
     });
 
     await waitFor(() => {
@@ -330,7 +328,7 @@ describe('CreateFlashcardPage', () => {
 
     // Simulate drop to reset state
     fireEvent.drop(uploadLabel!, {
-      dataTransfer: { files: [new File(['test'], 'test.jpg', { type: 'image/jpeg' })] }
+      dataTransfer: { files: [new File(['test'], 'test.jpg', { type: 'image/jpeg' })] },
     });
 
     await waitFor(() => {

@@ -31,7 +31,7 @@ export class DecksService {
   async findByUserId(userId: string): Promise<Deck[]> {
     return this.decksRepository.find({
       where: { userId },
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
@@ -46,13 +46,13 @@ export class DecksService {
   async findOneByUser(id: string, userId: string): Promise<Deck> {
     const deck = await this.decksRepository.findOne({
       where: { id, userId },
-      relations: ['flashcards']
+      relations: ['flashcards'],
     });
-    
+
     if (!deck) {
       throw new NotFoundException('Deck not found');
     }
-    
+
     return deck;
   }
 
@@ -72,23 +72,23 @@ export class DecksService {
     if (userId) {
       await this.findOneByUser(deckId, userId);
     }
-    
-    return this.flashcardsRepository.find({ 
+
+    return this.flashcardsRepository.find({
       where: { deckId },
-      order: { createdAt: 'ASC' }
+      order: { createdAt: 'ASC' },
     });
   }
 
   async createFlashcard(deckId: string, createFlashcardDto: CreateFlashcardDto, userId: string): Promise<Flashcard> {
     // Verify user owns the deck
     await this.findOneByUser(deckId, userId);
-    
+
     // If fileId is provided, construct the secure URL
     let imageUrl = createFlashcardDto.imageUrl;
     if (createFlashcardDto.fileId) {
       imageUrl = `/uploads/flashcards/${createFlashcardDto.fileId}`;
     }
-    
+
     const flashcard = this.flashcardsRepository.create({
       birdName: createFlashcardDto.birdName,
       imageUrl,
@@ -102,7 +102,7 @@ export class DecksService {
    */
   private extractFileIdFromUrl(imageUrl: string): string | null {
     if (!imageUrl) return null;
-    
+
     const match = imageUrl.match(/\/uploads\/flashcards\/([^\/]+)$/);
     return match ? match[1] : null;
   }
@@ -110,24 +110,24 @@ export class DecksService {
   async updateFlashcard(deckId: string, flashcardId: string, updateFlashcardDto: UpdateFlashcardDto & { fileId?: string }, userId: string): Promise<Flashcard> {
     // Verify user owns the deck
     await this.findOneByUser(deckId, userId);
-    
+
     const flashcard = await this.flashcardsRepository.findOne({
-      where: { id: flashcardId, deckId }
+      where: { id: flashcardId, deckId },
     });
-    
+
     if (!flashcard) {
       throw new NotFoundException('Flashcard not found');
     }
-    
+
     // Store old image URL for potential cleanup
     const oldImageUrl = flashcard.imageUrl;
-    
+
     // If fileId is provided, construct the secure URL
     let imageUrl = updateFlashcardDto.imageUrl;
     if (updateFlashcardDto.fileId) {
       imageUrl = `/uploads/flashcards/${updateFlashcardDto.fileId}`;
     }
-    
+
     // Update flashcard properties
     if (updateFlashcardDto.birdName !== undefined) {
       flashcard.birdName = updateFlashcardDto.birdName;
@@ -135,9 +135,9 @@ export class DecksService {
     if (imageUrl !== undefined) {
       flashcard.imageUrl = imageUrl;
     }
-    
+
     const updatedFlashcard = await this.flashcardsRepository.save(flashcard);
-    
+
     // Clean up old image file if it was replaced
     if (updateFlashcardDto.fileId && oldImageUrl && oldImageUrl !== imageUrl) {
       const oldFileId = this.extractFileIdFromUrl(oldImageUrl);
@@ -157,31 +157,31 @@ export class DecksService {
         }
       }
     }
-    
+
     return updatedFlashcard;
   }
 
   async removeFlashcard(deckId: string, flashcardId: string, userId: string): Promise<void> {
     // Verify user owns the deck
     await this.findOneByUser(deckId, userId);
-    
+
     const flashcard = await this.flashcardsRepository.findOne({
-      where: { id: flashcardId, deckId }
+      where: { id: flashcardId, deckId },
     });
-    
+
     if (!flashcard) {
       throw new NotFoundException('Flashcard not found');
     }
-    
+
     // Store image URL for cleanup
     const imageUrl = flashcard.imageUrl;
-    
+
     // First, delete related review results to avoid foreign key constraint violation
     await this.reviewResultsRepository.delete({ flashcardId });
-    
+
     // Remove flashcard from database
     await this.flashcardsRepository.remove(flashcard);
-    
+
     // Clean up associated image file
     if (imageUrl) {
       const fileId = this.extractFileIdFromUrl(imageUrl);

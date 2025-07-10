@@ -137,7 +137,7 @@ describe('ReviewSessionsService', () => {
 
       expect(result).toEqual(expectedSession);
       expect(mockRepositories.decks.findOne).toHaveBeenCalledWith({
-        where: { id: '1', userId: 'user-1' }
+        where: { id: '1', userId: 'user-1' },
       });
       expect(mockRepositories.reviewSessions.create).toHaveBeenCalledWith({
         deckId: '1',
@@ -163,7 +163,7 @@ describe('ReviewSessionsService', () => {
       expect(result).toEqual(sessionWithRelations);
       expect(mockRepositories.reviewSessions.findOne).toHaveBeenCalledWith({
         where: { id: '1', userId: 'user-1' },
-        relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+        relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
       });
     });
   });
@@ -184,7 +184,7 @@ describe('ReviewSessionsService', () => {
       expect(result).toEqual(mockReviewResult);
       expect(mockRepositories.reviewSessions.findOne).toHaveBeenCalledWith({
         where: { id: '1', userId: 'user-1' },
-        relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+        relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
       });
       expect(mockRepositories.reviewResults.create).toHaveBeenCalledWith({
         sessionId: '1',
@@ -212,7 +212,7 @@ describe('ReviewSessionsService', () => {
       expect(result).toEqual(completedSession);
       expect(mockRepositories.reviewSessions.findOne).toHaveBeenCalledWith({
         where: { id: '1', userId: 'user-1' },
-        relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+        relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
       });
       expect(mockRepositories.reviewSessions.update).toHaveBeenCalledWith('1', {
         completedAt: expect.any(Date),
@@ -227,17 +227,17 @@ describe('ReviewSessionsService', () => {
         deck: mockDeck,
         reviewResults: [
           { ...mockReviewResult, difficultyRating: DifficultyRating.EASY, flashcard: mockFlashcard },
-          { 
-            ...mockReviewResult, 
+          {
+            ...mockReviewResult,
             id: '2',
-            difficultyRating: DifficultyRating.DIFFICULT, 
-            flashcard: { ...mockFlashcard, id: '2', birdName: 'Difficult Bird' }
+            difficultyRating: DifficultyRating.DIFFICULT,
+            flashcard: { ...mockFlashcard, id: '2', birdName: 'Difficult Bird' },
           },
-          { 
-            ...mockReviewResult, 
+          {
+            ...mockReviewResult,
             id: '3',
-            difficultyRating: DifficultyRating.INCORRECT, 
-            flashcard: { ...mockFlashcard, id: '3', birdName: 'Incorrect Bird' }
+            difficultyRating: DifficultyRating.INCORRECT,
+            flashcard: { ...mockFlashcard, id: '3', birdName: 'Incorrect Bird' },
           },
         ],
         completedAt: new Date(),
@@ -258,7 +258,7 @@ describe('ReviewSessionsService', () => {
       });
       expect(mockRepositories.reviewSessions.findOne).toHaveBeenCalledWith({
         where: { id: '1', userId: 'user-1' },
-        relations: ['deck', 'reviewResults', 'reviewResults.flashcard']
+        relations: ['deck', 'reviewResults', 'reviewResults.flashcard'],
       });
     });
 

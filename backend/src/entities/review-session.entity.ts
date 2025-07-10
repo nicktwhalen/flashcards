@@ -25,10 +25,10 @@ export class ReviewSession {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Deck, deck => deck.reviewSessions)
+  @ManyToOne(() => Deck, (deck) => deck.reviewSessions)
   @JoinColumn({ name: 'deckId' })
   deck: Deck;
 
-  @OneToMany(() => ReviewResult, result => result.session)
+  @OneToMany(() => ReviewResult, (result) => result.session)
   reviewResults: ReviewResult[];
 }

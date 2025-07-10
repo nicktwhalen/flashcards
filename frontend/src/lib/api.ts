@@ -1,17 +1,4 @@
-import { 
-  Deck, 
-  Flashcard, 
-  ReviewSession, 
-  CreateReviewSessionDto, 
-  SubmitResultDto, 
-  SessionSummary,
-  CreateDeckDto,
-  UpdateDeckDto,
-  CreateFlashcardDto,
-  UpdateFlashcardDto,
-  AuthUser,
-  LoginResponse
-} from 'shared';
+import { Deck, Flashcard, ReviewSession, CreateReviewSessionDto, SubmitResultDto, SessionSummary, CreateDeckDto, UpdateDeckDto, CreateFlashcardDto, UpdateFlashcardDto, AuthUser, LoginResponse } from 'shared';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -22,11 +9,11 @@ function getAuthToken(): string | null {
 
 async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const token = getAuthToken();
-  
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...options?.headers,
     },
     ...options,
@@ -61,8 +48,7 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> 
 export const api = {
   auth: {
     getProfile: (): Promise<AuthUser> => fetchAPI('/auth/profile'),
-    logout: (): Promise<{ message: string }> => 
-      fetchAPI('/auth/logout', { method: 'POST' }),
+    logout: (): Promise<{ message: string }> => fetchAPI('/auth/logout', { method: 'POST' }),
   },
 
   decks: {
@@ -78,10 +64,8 @@ export const api = {
         method: 'PUT',
         body: JSON.stringify(data),
       }),
-    delete: (id: string): Promise<void> =>
-      fetchAPI(`/decks/${id}`, { method: 'DELETE' }),
-    getFlashcards: (id: string): Promise<Flashcard[]> => 
-      fetchAPI(`/decks/${id}/flashcards`),
+    delete: (id: string): Promise<void> => fetchAPI(`/decks/${id}`, { method: 'DELETE' }),
+    getFlashcards: (id: string): Promise<Flashcard[]> => fetchAPI(`/decks/${id}/flashcards`),
     createFlashcard: (deckId: string, data: CreateFlashcardDto): Promise<Flashcard> =>
       fetchAPI(`/decks/${deckId}/flashcards`, {
         method: 'POST',
@@ -92,30 +76,29 @@ export const api = {
         method: 'PUT',
         body: JSON.stringify(data),
       }),
-    deleteFlashcard: (deckId: string, flashcardId: string): Promise<void> =>
-      fetchAPI(`/decks/${deckId}/flashcards/${flashcardId}`, { method: 'DELETE' }),
+    deleteFlashcard: (deckId: string, flashcardId: string): Promise<void> => fetchAPI(`/decks/${deckId}/flashcards/${flashcardId}`, { method: 'DELETE' }),
   },
-  
+
   reviewSessions: {
     create: (data: CreateReviewSessionDto): Promise<ReviewSession> =>
       fetchAPI('/review-sessions', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
-    
+
     getById: (id: string): Promise<ReviewSession> => fetchAPI(`/review-sessions/${id}`),
-    
+
     submitResult: (sessionId: string, data: SubmitResultDto): Promise<void> =>
       fetchAPI(`/review-sessions/${sessionId}/results`, {
         method: 'POST',
         body: JSON.stringify(data),
       }),
-    
+
     complete: (id: string): Promise<ReviewSession> =>
       fetchAPI(`/review-sessions/${id}/complete`, {
         method: 'PATCH',
       }),
-    
+
     getSummary: (id: string): Promise<SessionSummary> => fetchAPI(`/review-sessions/${id}/summary`),
   },
 
@@ -128,7 +111,7 @@ export const api = {
       const response = await fetch(`${API_BASE_URL}/uploads/flashcards/${deckId}`, {
         method: 'POST',
         headers: {
-          ...(token && { 'Authorization': `Bearer ${token}` }),
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
         body: formData,
       });

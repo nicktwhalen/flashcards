@@ -25,7 +25,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     // Check for existing token on mount
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
-    
+
     if (token && userStr) {
       try {
         const userData = JSON.parse(userStr);
@@ -36,7 +36,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
         localStorage.removeItem('user');
       }
     }
-    
+
     setLoading(false);
   }, []);
 

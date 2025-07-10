@@ -46,7 +46,7 @@ export interface ReviewResult {
 export enum DifficultyRating {
   EASY = 'easy',
   DIFFICULT = 'difficult',
-  INCORRECT = 'incorrect'
+  INCORRECT = 'incorrect',
 }
 
 export interface SessionSummary {

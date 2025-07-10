@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import UserHeader from "@/components/UserHeader";
-import FlashcardForm from "@/components/FlashcardForm";
+import { useState, useEffect } from 'react';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import UserHeader from '@/components/UserHeader';
+import FlashcardForm from '@/components/FlashcardForm';
 
 interface EditFlashcardPageProps {
   params: Promise<{ id: string; flashcardId: string }>;
 }
 
 export default function EditFlashcardPage({ params }: EditFlashcardPageProps): JSX.Element {
-  const [deckId, setDeckId] = useState<string>("");
-  const [flashcardId, setFlashcardId] = useState<string>("");
+  const [deckId, setDeckId] = useState<string>('');
+  const [flashcardId, setFlashcardId] = useState<string>('');
 
   useEffect(() => {
     async function loadParams() {

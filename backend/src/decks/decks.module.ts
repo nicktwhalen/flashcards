@@ -7,10 +7,7 @@ import { ReviewResult } from '../entities/review-result.entity';
 import { UploadModule } from '../upload/upload.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Deck, Flashcard, ReviewResult]),
-    UploadModule
-  ],
+  imports: [TypeOrmModule.forFeature([Deck, Flashcard, ReviewResult]), UploadModule],
   controllers: [DecksController],
   providers: [DecksService],
 })

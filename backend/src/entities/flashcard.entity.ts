@@ -19,10 +19,10 @@ export class Flashcard {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => Deck, deck => deck.flashcards)
+  @ManyToOne(() => Deck, (deck) => deck.flashcards)
   @JoinColumn({ name: 'deckId' })
   deck: Deck;
 
-  @OneToMany(() => ReviewResult, result => result.flashcard, { cascade: true })
+  @OneToMany(() => ReviewResult, (result) => result.flashcard, { cascade: true })
   reviewResults: ReviewResult[];
 }

@@ -5,21 +5,18 @@ import * as path from 'path';
 // Create a simplified version of UploadService for testing
 class TestUploadService {
   private readonly uploadsDir = path.resolve(__dirname, '../../uploads/flashcards');
-  private readonly allowedMimeTypes = [
-    'image/jpeg',
-    'image/jpg', 
-    'image/png',
-    'image/gif',
-    'image/webp'
-  ];
+  private readonly allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
   private readonly maxFileSize = 5 * 1024 * 1024; // 5MB
   private readonly uploadedFiles = new Map<string, any>();
 
-  constructor(private userRepository: any, private deckRepository: any) {}
+  constructor(
+    private userRepository: any,
+    private deckRepository: any,
+  ) {}
 
   async validateDeckOwnership(userId: string, deckId: string): Promise<void> {
     const deck = await this.deckRepository.findOne({
-      where: { id: deckId, userId }
+      where: { id: deckId, userId },
     });
 
     if (!deck) {
@@ -46,7 +43,7 @@ class TestUploadService {
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
       'image/gif': ['.gif'],
-      'image/webp': ['.webp']
+      'image/webp': ['.webp'],
     };
 
     if (!validExtensions[file.mimetype]?.includes(ext)) {
@@ -62,20 +59,20 @@ class TestUploadService {
       originalName: file.originalname,
       mimeType: file.mimetype,
       size: file.size,
-      uploadDate: new Date()
+      uploadDate: new Date(),
     };
 
     this.uploadedFiles.set(fileId, fileRecord);
 
     return {
       fileId,
-      url: `/api/uploads/flashcards/${fileId}`
+      url: `/api/uploads/flashcards/${fileId}`,
     };
   }
 
   async getFile(fileId: string, userId: string): Promise<{ filePath: string; mimeType: string }> {
     const fileRecord = this.uploadedFiles.get(fileId);
-    
+
     if (!fileRecord) {
       throw new BadRequestException('File not found');
     }
@@ -84,13 +81,13 @@ class TestUploadService {
 
     return {
       filePath: '/path/to/file.jpg',
-      mimeType: fileRecord.mimeType
+      mimeType: fileRecord.mimeType,
     };
   }
 
   async deleteFile(fileId: string, userId: string): Promise<void> {
     const fileRecord = this.uploadedFiles.get(fileId);
-    
+
     if (!fileRecord) {
       throw new BadRequestException('File not found');
     }
@@ -144,7 +141,7 @@ describe('UploadService', () => {
     mockUserRepository = {
       findOne: jest.fn(),
     };
-    
+
     mockDeckRepository = {
       findOne: jest.fn(),
     };
@@ -178,9 +175,7 @@ describe('UploadService', () => {
 
       const largeFile = { ...mockFile, size: 6 * 1024 * 1024 }; // 6MB
 
-      await expect(service.uploadFile(largeFile, 'user-1', 'deck-1'))
-        .rejects
-        .toThrow(BadRequestException);
+      await expect(service.uploadFile(largeFile, 'user-1', 'deck-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should reject invalid file types', async () => {
@@ -188,31 +183,25 @@ describe('UploadService', () => {
 
       const invalidFile = { ...mockFile, mimetype: 'text/plain' };
 
-      await expect(service.uploadFile(invalidFile, 'user-1', 'deck-1'))
-        .rejects
-        .toThrow(BadRequestException);
+      await expect(service.uploadFile(invalidFile, 'user-1', 'deck-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should reject files with mismatched extensions', async () => {
       mockDeckRepository.findOne.mockResolvedValue(mockDeck);
 
-      const mismatchedFile = { 
-        ...mockFile, 
+      const mismatchedFile = {
+        ...mockFile,
         originalname: 'test.txt',
-        mimetype: 'image/jpeg'
+        mimetype: 'image/jpeg',
       };
 
-      await expect(service.uploadFile(mismatchedFile, 'user-1', 'deck-1'))
-        .rejects
-        .toThrow(BadRequestException);
+      await expect(service.uploadFile(mismatchedFile, 'user-1', 'deck-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should reject upload if user does not own deck', async () => {
       mockDeckRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.uploadFile(mockFile, 'user-1', 'deck-1'))
-        .rejects
-        .toThrow(UnauthorizedException);
+      await expect(service.uploadFile(mockFile, 'user-1', 'deck-1')).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -222,7 +211,7 @@ describe('UploadService', () => {
 
       // First upload a file
       const uploadResult = await service.uploadFile(mockFile, 'user-1', 'deck-1');
-      
+
       const result = await service.getFile(uploadResult.fileId, 'user-1');
 
       expect(result).toHaveProperty('filePath');
@@ -231,9 +220,7 @@ describe('UploadService', () => {
     });
 
     it('should reject access to non-existent file', async () => {
-      await expect(service.getFile('non-existent-id', 'user-1'))
-        .rejects
-        .toThrow(BadRequestException);
+      await expect(service.getFile('non-existent-id', 'user-1')).rejects.toThrow(BadRequestException);
     });
 
     it('should reject access if user does not own deck', async () => {
@@ -241,13 +228,11 @@ describe('UploadService', () => {
 
       // Upload file as user-1
       const uploadResult = await service.uploadFile(mockFile, 'user-1', 'deck-1');
-      
+
       // Try to access as different user
       mockDeckRepository.findOne.mockResolvedValue(null);
-      
-      await expect(service.getFile(uploadResult.fileId, 'user-2'))
-        .rejects
-        .toThrow(UnauthorizedException);
+
+      await expect(service.getFile(uploadResult.fileId, 'user-2')).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -257,7 +242,7 @@ describe('UploadService', () => {
 
       // First upload a file
       const uploadResult = await service.uploadFile(mockFile, 'user-1', 'deck-1');
-      
+
       await service.deleteFile(uploadResult.fileId, 'user-1');
 
       // File should be removed from in-memory storage
@@ -269,13 +254,11 @@ describe('UploadService', () => {
 
       // Upload file as user-1
       const uploadResult = await service.uploadFile(mockFile, 'user-1', 'deck-1');
-      
+
       // Try to delete as different user
       mockDeckRepository.findOne.mockResolvedValue(null);
-      
-      await expect(service.deleteFile(uploadResult.fileId, 'user-2'))
-        .rejects
-        .toThrow(UnauthorizedException);
+
+      await expect(service.deleteFile(uploadResult.fileId, 'user-2')).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -283,22 +266,20 @@ describe('UploadService', () => {
     it('should prevent directory traversal in filenames', async () => {
       mockDeckRepository.findOne.mockResolvedValue(mockDeck);
 
-      const maliciousFile = { 
-        ...mockFile, 
-        originalname: '../../../etc/passwd.jpg'
+      const maliciousFile = {
+        ...mockFile,
+        originalname: '../../../etc/passwd.jpg',
       };
 
       const result = await service.uploadFile(maliciousFile, 'user-1', 'deck-1');
-      
+
       // Should generate secure filename, not use original
       expect(result.url).toMatch(/^\/api\/uploads\/flashcards\/.+$/);
     });
 
     it('should validate file paths stay within uploads directory', async () => {
       // Try to access file outside uploads directory
-      await expect(service.getFile('../../../../etc/passwd', 'user-1'))
-        .rejects
-        .toThrow(BadRequestException);
+      await expect(service.getFile('../../../../etc/passwd', 'user-1')).rejects.toThrow(BadRequestException);
     });
   });
 });

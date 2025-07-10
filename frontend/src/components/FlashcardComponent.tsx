@@ -10,12 +10,7 @@ interface FlashcardComponentProps {
   totalCards: number;
 }
 
-export default function FlashcardComponent({ 
-  flashcard, 
-  onRate, 
-  currentIndex, 
-  totalCards 
-}: FlashcardComponentProps) {
+export default function FlashcardComponent({ flashcard, onRate, currentIndex, totalCards }: FlashcardComponentProps) {
   const [showName, setShowName] = useState(false);
   const [selectedRating, setSelectedRating] = useState<DifficultyRating | null>(null);
 
@@ -66,15 +61,10 @@ export default function FlashcardComponent({
           <span className="text-sm font-medium text-gray-600">
             Card {currentIndex + 1} of {totalCards}
           </span>
-          <span className="text-sm text-gray-500">
-            {Math.round(((currentIndex) / totalCards) * 100)}% Complete
-          </span>
+          <span className="text-sm text-gray-500">{Math.round((currentIndex / totalCards) * 100)}% Complete</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentIndex) / totalCards) * 100}%` }}
-          ></div>
+          <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{ width: `${(currentIndex / totalCards) * 100}%` }}></div>
         </div>
       </div>
 
@@ -84,11 +74,8 @@ export default function FlashcardComponent({
         <div className="text-center mb-6">
           <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center mb-4">
             {flashcard.imageUrl ? (
-              <img 
-                src={flashcard.imageUrl.startsWith('/uploads/') 
-                  ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${flashcard.imageUrl}`
-                  : flashcard.imageUrl
-                }
+              <img
+                src={flashcard.imageUrl.startsWith('/uploads/') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${flashcard.imageUrl}` : flashcard.imageUrl}
                 alt="Bird to identify"
                 className="max-h-full max-w-full object-contain rounded-lg"
                 onError={(e) => {
@@ -97,16 +84,11 @@ export default function FlashcardComponent({
                 }}
               />
             ) : null}
-            <div className="text-gray-400 text-lg hidden">
-              🐦 Bird Image
-            </div>
+            <div className="text-gray-400 text-lg hidden">🐦 Bird Image</div>
           </div>
-          
+
           {!showName && (
-            <button
-              onClick={handleRevealName}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
-            >
+            <button onClick={handleRevealName} className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
               Reveal Bird Name
             </button>
           )}
@@ -116,18 +98,14 @@ export default function FlashcardComponent({
         {showName && (
           <div className="text-center mb-8 animate-fadeIn">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-blue-800 mb-2">
-                {flashcard.birdName}
-              </h2>
+              <h2 className="text-2xl font-bold text-blue-800 mb-2">{flashcard.birdName}</h2>
             </div>
           </div>
         )}
 
         {/* Difficulty Rating Section */}
         <div className="text-center mb-6">
-          <p className="text-blue-600 mb-4">
-            How well did you know this bird?
-          </p>
+          <p className="text-blue-600 mb-4">How well did you know this bird?</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {Object.values(DifficultyRating).map((rating) => (
               <button

@@ -14,27 +14,21 @@ import * as multer from 'multer';
       storage: multer.memoryStorage(),
       limits: {
         fileSize: 5 * 1024 * 1024, // 5MB
-        files: 1
+        files: 1,
       },
       fileFilter: (req, file, cb) => {
-        const allowedMimeTypes = [
-          'image/jpeg',
-          'image/jpg', 
-          'image/png',
-          'image/gif',
-          'image/webp'
-        ];
-        
+        const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
         if (allowedMimeTypes.includes(file.mimetype)) {
           cb(null, true);
         } else {
           cb(new Error('Invalid file type') as any, false);
         }
-      }
-    })
+      },
+    }),
   ],
   controllers: [UploadController],
   providers: [UploadService],
-  exports: [UploadService]
+  exports: [UploadService],
 })
 export class UploadModule {}
