@@ -22,11 +22,12 @@
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
     "prepare": "husky",
-    "check-format": "prettier --check **/*.ts",
-    "format": "prettier --write **/*.ts"
+    "check-format": "prettier --check '**/*.ts' '**/*.tsx'",
+    "format": "prettier --write '**/*.ts' '**/*.tsx'"
   },
   "lint-staged": {
-    "**/*.ts": "prettier --write --ignore-unknown"
+    "**/*.ts": "prettier --write --ignore-unknown",
+    "**/*.tsx": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
     "concurrently": "^8.0.0",
